@@ -1,17 +1,16 @@
 #include <stdio.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-
+#include <sys/mman.h>
+    
+//gcc server6.c -lrt -o server
 int main()
 {
-    int c,shmid;
-    int* addr;
+ 
+    int shm = shm_open("OS", 66, 0666);
+    ftruncate(shm, 4096); 
+    int* addr = (int*) mmap(0, 4096, 3, 1, shm, 0);
 
-    shmid = shmget(0x57f, 4096, IPC_CREAT);
-    addr = (int*) shmat(shmid, NULL, 0);
-    
-    printf("Enter the counter value\n");
-    scanf("%d", addr);
-    while (1) ;
+    scanf("%d",addr);
+
+    while(1);
     return 0;
 }

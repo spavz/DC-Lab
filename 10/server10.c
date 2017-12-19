@@ -3,16 +3,16 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
+#include <sys/mman.h>
 
 
+//gcc server10.c -lrt -o server
 int main()
 {
     struct sockaddr_in server, client;
     int sock, cs, pid,len = sizeof(client);
     char buf[50];
-    int* mutex = (int*) shmat(shmget(0x57f,4096,IPC_CREAT),NULL,0);   // So that child process has access to the mutex too. Similar to shared mem program.
+    int* mutex = (int*) mmap(0, 4096, 3, 33, 0, 0);   // So that child process has access to the mutex too. This call allows forked process' pages read-write only.
     *mutex = 0;
 
     sock = socket(2, 1, 0);         //hardcoded constants (TCP)
@@ -28,7 +28,7 @@ int main()
     while (1) 
     {
         cs  = accept(sock, &client, &len);
-        if(*mutex == 1){              // parent waits till the existing child returns
+        if(*mutex == 1){              // parent denies client-requests till the existing child returns
             char m[50] = "LOCKED";
             send(cs, m, 50, 0);
         }else
