@@ -1,3 +1,6 @@
+//g++ ring.cpp -std=c++11
+
+
 #include <iostream>
 #include <list>
 using namespace std;

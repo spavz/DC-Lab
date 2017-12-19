@@ -12,13 +12,13 @@ int main()
     struct sockaddr_in server, client;
     int sock, cs, pid,len = sizeof(client);
     char buf[50];
-    int* mutex = (int*) shmat(shmget(0x57f,4096,IPC_CREAT),NULL,0);
+    int* mutex = (int*) shmat(shmget(0x57f,4096,IPC_CREAT),NULL,0);   // So that child process has access to the mutex too. Similar to shared mem program.
     *mutex = 0;
 
-    sock = socket(2, 1, 0);
+    sock = socket(2, 1, 0);         //hardcoded constants (TCP)
     server.sin_family      = 2;
     server.sin_addr.s_addr = 0;
-    server.sin_port        = 0x8813;
+    server.sin_port        = 0x8813;   //hardcoded port 5000 in network byte order. 5001 is 0x8913, 5002 is 0x8A13 and so on.
 
 
     bind(sock, &server, len);
@@ -28,12 +28,12 @@ int main()
     while (1) 
     {
         cs  = accept(sock, &client, &len);
-        if(*mutex == 1){
+        if(*mutex == 1){              // parent waits till the existing child returns
             char m[50] = "LOCKED";
             send(cs, m, 50, 0);
         }else
         {
-            *mutex = 1;
+            *mutex = 1;                // parent locks the mutex (once) 
             char m1[50] = "UNLOCK";
             send(cs, m1, 50, 0);
             if ((pid = fork()) == 0)
@@ -46,7 +46,7 @@ int main()
                 scanf("%s",buf);
                 send(cs, buf, 50, 0);
                 close(cs);
-                *mutex = 0;
+                *mutex = 0;            // child unlocks the mutex and exits critical section.
                 return 0;
             }
         }

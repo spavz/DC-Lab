@@ -39,10 +39,10 @@ int main() {
           break;
 
       case -1:
-        A[i] = max(A[i], B[j] + 1);
-        for (int k = i+1; k < nA; k++)
-          A[k] = A[k-1] + 1;
-        break;
+          A[i] = max(A[i], B[j] + 1);
+          for (int k = i+1; k < nA; k++)
+              A[k] = A[k-1] + 1;
+          break;
 
       case 0:
         break;
