@@ -21,7 +21,6 @@ main()
     listen(sock, 5);
     while(1)
     {
-        //len = sizeof(client);
         cs  = accept(sock, (struct sockaddr *) &client, &len);
         puts("TCP: Client connected");
         sleep(5);

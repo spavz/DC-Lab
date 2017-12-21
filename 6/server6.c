@@ -11,6 +11,7 @@ int main()
 
     scanf("%d",addr);
 
-    while(1);
+    puts("Enter some value to write and exit");
+    scanf("%d",addr);
     return 0;
 }

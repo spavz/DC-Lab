@@ -7,13 +7,18 @@ using namespace std;
 int n;
 bool alive[100];
 
-int election(int init)
+int election(int* init)
 {
+	*init = 999;
+	for (int i = 0; i < n; ++i)
+		if(alive[i])
+			*init = min(*init, i);
+
 	list<int> e;
 	int coord = 0;
 	for (int i = 0; i < n; ++i)
 	{
-		int p = (i+init)%n;
+		int p = (i+*init)%n;
 		if(alive[p])
 		{
 			e.push_back(p);
@@ -39,9 +44,6 @@ int main()
 	cout << "Enter n\n";
 	cin >> n;
 
-	cout << "Enter initiator\n";
-	cin >> init;
-
 	for (int i = 0; i < n; ++i)
 		alive[i] = true;
 
@@ -61,7 +63,7 @@ int main()
 		else
 			return 0;
 
-		cout << "Coordinator: " << election(init) << endl;
+		cout << "Coordinator: " << election(&init) << endl;
 		cout << "initiator: " << init << endl;
 	}
 }
